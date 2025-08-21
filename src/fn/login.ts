@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { getCloudflareContext } from '@opennextjs/cloudflare'
+import { CF_TOKEN } from '@/consts/keys'
 
 let token = ''
 let tokenLifetime = '1977-01-01T00:00:00Z'
@@ -16,12 +17,26 @@ function getCookieValue(
 export async function login() {
   console.log('🚀 ~ login ~ token:', token)
   console.log('🚀 ~ login ~ tokenLifetime:', tokenLifetime)
-  if (token && dayjs(tokenLifetime).isAfter(dayjs())) {
+  if (token && tokenLifetime && dayjs(tokenLifetime).isAfter(dayjs())) {
+    console.log('return token from closure')
     return token
   }
-  console.log('🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀  No valid token, re-login')
-
   const env = getCloudflareContext().env
+  const kv = env.KV
+  const { value, metadata } = await kv.getWithMetadata<{ expiration: string }>(
+    CF_TOKEN,
+  )
+
+  if (value && metadata) {
+    token = value
+    tokenLifetime = metadata.expiration
+    return value
+  } else {
+    await kv.delete(CF_TOKEN)
+  }
+
+  console.log('****************No valid token; re-login****************')
+
   const res = await fetch('https://power.rakkipower.win', {
     headers: {
       'CF-Access-Client-Id': env.CF_CLIENT_ID,
@@ -33,8 +48,10 @@ export async function login() {
   const tokenLifetimeRes = getCookieValue(setCookieStr, 'Expires')
   if (tokenRes && tokenLifetimeRes) {
     token = tokenRes
-    tokenLifetime = tokenLifetimeRes
+    kv.put(CF_TOKEN, token, {
+      expiration: dayjs(tokenLifetime).unix(),
+      metadata: { expiration: tokenLifetimeRes },
+    })
   }
-
   return token
 }

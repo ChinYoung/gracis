@@ -70,5 +70,11 @@
       "binding": "gracias",
       "bucket_name": "gracias"
     }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "4b9e36a5416949b99a23925be0f02e3a"
+    }
   ]
 }
