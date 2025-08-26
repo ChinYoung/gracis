@@ -48,13 +48,12 @@ export async function login() {
     },
   })
   const setCookieStr = res.headers.get('set-cookie')
+  console.log('🚀 ~ login ~ setCookieStr:', setCookieStr)
   const tokenRes = getCookieValue(setCookieStr, 'CF_Authorization')
-  const tokenLifetimeRes = getCookieValue(setCookieStr, 'Expires')
-  if (tokenRes && tokenLifetimeRes) {
+  console.log('🚀 ~ login ~ tokenRes:', tokenRes)
+  if (tokenRes) {
     token = tokenRes
-    const now = dayjs(tokenLifetimeRes).unix()
-    console.log('🚀 ~ login ~ now:', now)
-    const ttl = dayjs(tokenLifetimeRes).subtract(5, 'minute').unix()
+    const ttl = dayjs().add(1, 'day').subtract(5, 'minute').unix()
     console.log('🚀 ~ login ~ ttl:', ttl)
     kv.put(CF_TOKEN, token, {
       // 5 minutes before expiration, to avoid inconsistency of KV

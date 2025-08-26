@@ -23,3 +23,11 @@ export type TStrapiTag = TStrapiItem<{
   name: string
   rid: string
 }>
+
+export type TStrapiMenu = TStrapiItem<{
+  name: string
+  path: string
+  protected: boolean
+  children: TStrapiMenu[]
+  parent: TStrapiMenu | null
+}>
