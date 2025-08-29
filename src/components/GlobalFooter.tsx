@@ -1,1 +1,1 @@
-export const GlobalFooter = () => <div>global footer</div>
+export const GlobalFooter = () => <div className='px-2'>global footer</div>

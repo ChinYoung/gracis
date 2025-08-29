@@ -12,8 +12,8 @@ const MenuItem: FC<{ menu: TStrapiMenu; prefix: string }> = ({
   const thisPath =
     menu.path === '/' ? '/' : `${prefix ? prefix : '/'}${menu.path}/`
   return (
-    <div className='px-4 py-2 hover:scale-110 w-full h-fit rounded-lg cursor-pointer'>
-      <Link href={thisPath} className='text-blue-500'>
+    <div className='px-2 py-1 hover:scale-110 w-full h-fit rounded-lg cursor-pointer'>
+      <Link href={thisPath} className='whitespace-nowrap'>
         {menu.name}
       </Link>
     </div>
@@ -27,22 +27,24 @@ const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
       <MenuItem menu={menu} prefix='/' />
       {/* sub paths */}
       {menu.children && menu.children.length > 0 && (
-        <div className='shadow-2xl px-4 rounded-lg absolute left-full top-0 hidden opacity-0 group-hover:block group-hover:opacity-100 transition-discrete transition-all duration-800'>
-          {menu.children.map((child) => (
-            <div
-              key={child.documentId}
-              className='border-b border-gray-300 p-1 last:border-none'
-            >
-              {generateMenu(child, `/${menu.path}/`)}
-            </div>
-          ))}
+        <div className='absolute left-0 top-[120%] bg-white'>
+          <div className='shadow-2xl px-4 rounded-lg hidden opacity-0 group-hover:block group-hover:opacity-100 transition-discrete transition-all duration-800'>
+            {menu.children.map((child) => (
+              <div
+                key={child.documentId}
+                className='border-b border-gray-300 p-1 last:border-none'
+              >
+                {renderChildMenu(child, `/${menu.path}/`)}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
   )
 }
 
-function generateMenu(menu: TStrapiMenu, prefix: string) {
+function renderChildMenu(menu: TStrapiMenu, prefix: string) {
   return (
     <div key={menu.documentId} className='flex gap-2'>
       {/* root */}
@@ -53,7 +55,7 @@ function generateMenu(menu: TStrapiMenu, prefix: string) {
           menu.children.length > 0 &&
           menu.children.map((child) => (
             <div key={child.documentId}>
-              {generateMenu(child, `${prefix ? prefix : '/'}${menu.path}/`)}
+              {renderChildMenu(child, `${prefix ? prefix : '/'}${menu.path}/`)}
             </div>
           ))}
       </div>
@@ -79,11 +81,13 @@ export default async function GlobalMenu() {
   const res = await fetchStrapi(`menus?${queryString}`)
   const jsonData = await res.json<TStrapiRes<TStrapiMenu[]>>()
   const formatted = linkMenus(jsonData.data)
+  console.log('🚀 ~ RootMenu ~ formatted:', formatted)
 
   return (
-    <div className='flex flex-col gap-2 w-fit'>
+    <div className='flex gap-2 w-fit py-8'>
       {formatted
         .filter((i) => !i.parent)
+        .sort((a, b) => b.priority - a.priority)
         .map((menu) => (
           <RootMenu key={menu.documentId} menu={menu} />
         ))}

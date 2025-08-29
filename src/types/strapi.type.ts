@@ -30,4 +30,5 @@ export type TStrapiMenu = TStrapiItem<{
   protected: boolean
   children: TStrapiMenu[]
   parent: TStrapiMenu | null
+  priority: number
 }>
