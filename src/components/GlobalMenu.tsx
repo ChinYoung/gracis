@@ -1,8 +1,7 @@
-import { fetchStrapi } from '@/fns/fetchStrapi'
 import { TStrapiMenu, TStrapiRes } from '@/types/strapi.type'
 import { keyBy } from 'lodash'
-import qs from 'qs'
 import { RootMenus } from './RootMenus'
+import { fetchMenus } from '@/requests/getMenus'
 
 function linkMenus(menus: TStrapiMenu[]) {
   const menuMap = keyBy(menus, 'documentId')
@@ -15,12 +14,7 @@ function linkMenus(menus: TStrapiMenu[]) {
 }
 
 export default async function GlobalMenu() {
-  const queryString = qs.stringify({
-    populate: ['children', 'parent'],
-  })
-
-  const res = await fetchStrapi(`menus?${queryString}`)
-  const jsonData = await res.json<TStrapiRes<TStrapiMenu[]>>()
+  const jsonData = await fetchMenus()
   const formatted = linkMenus(jsonData.data)
 
   return (
