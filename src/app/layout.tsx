@@ -5,6 +5,7 @@ import { GlobalFooter } from '@/components/GlobalFooter'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { fetchMenus } from '@/requests/getMenus'
+import { ConfigProvider, theme } from 'antd'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -19,15 +20,16 @@ export default async function RootLayout({
   const jsonData = await fetchMenus()
   return (
     <html lang='en'>
-      <body className='pt-5 bg-gray-50 relative'>
+      <body className='pt-5 relative full'>
         <AntdRegistry>
+
           <GlobalHeader />
-          <div>
-            <Breadcrumbs menus={jsonData.data} />
-          </div>
-          <main className='min-h-screen flex justify-center gap-2 w-full'>
+          <main className='min-h-screen flex justify-center gap-2 w-full '>
             <aside className='h-full'></aside>
-            <div className='max-w-7xl h-full w-full'>{children}</div>
+            <div className='max-w-7xl h-full w-full'>
+              <Breadcrumbs menus={jsonData.data} />
+              {children}
+            </div>
             <aside className='h-full'></aside>
           </main>
           <GlobalFooter />

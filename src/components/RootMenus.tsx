@@ -1,7 +1,7 @@
 'use client'
 
 import { TStrapiMenu } from '@/types/strapi.type'
-import { set } from 'lodash'
+import { ConfigProvider, theme } from 'antd'
 import Link from 'next/link'
 import { FC, UIEvent, useCallback, useEffect, useRef, useState } from 'react'
 
@@ -12,23 +12,26 @@ const MenuItem: FC<{ menu: TStrapiMenu; prefix: string }> = ({
   const thisPath =
     menu.path === '/' ? '/' : `${prefix ? prefix : '/'}${menu.path}/`
   return (
-    <div className='px-2 py-1 hover:scale-110 w-full h-fit rounded-lg cursor-pointer'>
-      <Link href={thisPath} className='whitespace-nowrap'>
-        {menu.name}
-      </Link>
-    </div>
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+      <div className='px-2 py-1 hover:scale-110 w-full h-fit rounded-lg cursor-pointer'>
+        <Link href={thisPath} className='whitespace-nowrap'>
+          {menu.name}
+        </Link>
+      </div>
+    </ConfigProvider>
   )
 }
 
 const RootMenu: FC<{ menu: TStrapiMenu }> = ({ menu }) => {
   return (
+
     <div key={menu.documentId} className='relative w-fit group'>
       {/* root */}
       <MenuItem menu={menu} prefix='/' />
       {/* sub paths */}
       {menu.children && menu.children.length > 0 && (
         <div className='absolute left-0 top-[100%]  hidden opacity-0 group-hover:block group-hover:opacity-100 transition-discrete transition-all duration-800'>
-          <div className='mt-2 px-10 py-4 bg-white rounded-lg shadow-2xl'>
+          <div className='mt-2 px-10 py-4 rounded-lg shadow-2xl'>
             {menu.children.map((child) => (
               <div
                 key={child.documentId}
@@ -85,7 +88,7 @@ export const RootMenus: FC<{ menus: TStrapiMenu[] }> = ({ menus }) => {
   }, [])
   return (
     <div
-      className='w-full sticky top-0 pt-2 pb-1 flex gap-2 justify-start bg-white px-10'
+      className='w-full sticky top-0 pt-2 pb-1 flex gap-2 justify-start  px-10 bg-[var(--background)]'
       ref={divRef}
     >
       {isSticky ? (

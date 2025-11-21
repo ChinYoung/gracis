@@ -19,8 +19,11 @@ export async function login() {
     console.log('return token from closure')
     return token
   }
-  const env = getCloudflareContext().env
-  const kv = env.KV
+  const { KV: kv, NEXTJS_ENV, STRAPI_URL, CF_CLIENT_ID, CF_CLIENT_SECRET, } = getCloudflareContext().env
+  console.log("🚀 ~ login ~ NEXTJS_ENV:", NEXTJS_ENV)
+  if (NEXTJS_ENV === 'development') {
+    return ''
+  }
   const { value, metadata } = await kv.getWithMetadata<{ expiration: string }>(
     CF_TOKEN,
   )
@@ -35,10 +38,10 @@ export async function login() {
 
   console.log('****************No valid token; re-login****************')
 
-  const res = await fetch(env.STRAPI_URL, {
+  const res = await fetch(STRAPI_URL, {
     headers: {
-      'CF-Access-Client-Id': env.CF_CLIENT_ID,
-      'CF-Access-Client-Secret': env.CF_CLIENT_SECRET,
+      'CF-Access-Client-Id': CF_CLIENT_ID,
+      'CF-Access-Client-Secret': CF_CLIENT_SECRET,
     },
   })
   const setCookieStr = res.headers.get('set-cookie')

@@ -19,9 +19,9 @@ export default async function GlobalMenu() {
 
   return (
     <>
-      <div className='h-8 bg-white'></div>
+      <div className='h-8'></div>
       <RootMenus menus={formatted} />
-      <div className='h-8 bg-white'></div>
+      <div className='h-8'></div>
     </>
   )
 }
