@@ -1,22 +1,22 @@
 "use client";
 
 import { TStrapiMenu } from "@/types/strapi.type";
-import { ConfigProvider, theme, Typography } from "antd";
+import { Typography } from "antd";
 import Card from "antd/es/card/Card";
 import Link from "next/link";
 import { FC, useEffect, useRef, useState } from "react";
 import { ThemeProvider } from "./ThemeProvider";
+import path from "path";
 
 const MenuItem: FC<{ menu: TStrapiMenu; prefix: string }> = ({
   menu,
   prefix,
 }) => {
   const { Text } = Typography;
-  const thisPath =
-    menu.path === "/" ? "/" : `${prefix ? prefix : "/"}${menu.path}/`;
+  const thisPath = menu.path === "/" ? "/" : path.join("/", prefix, menu.path);
   return (
     <div className="px-2 py-1 hover:scale-110 w-full h-fit rounded-lg cursor-pointer">
-      <Link href={thisPath} className="whitespace-nowrap">
+      <Link href={thisPath} className="whitespace-nowrap flex gap-2">
         <Text>{menu.name}</Text>
       </Link>
     </div>
@@ -27,10 +27,10 @@ const RootMenu: FC<{ menu: TStrapiMenu; allMenus: TStrapiMenu[] }> = ({
   menu,
   allMenus,
 }) => {
-  console.log("🚀 ~ RootMenu ~ childMenu:", allMenus);
   const childMenu = allMenus.filter(
     (i) => (i.parent || {}).documentId === menu.documentId
   );
+  const thisPath = menu.path === "/" ? "/" : menu.path;
   return (
     <div key={menu.documentId} className="relative w-fit group">
       {/* root */}
@@ -41,7 +41,7 @@ const RootMenu: FC<{ menu: TStrapiMenu; allMenus: TStrapiMenu[] }> = ({
           <Card size="small">
             {menu.children.map((child) => (
               <div key={child.documentId}>
-                {renderChildMenu(child, `/${menu.path}/`, allMenus)}
+                {renderChildMenu(child, thisPath, allMenus)}
               </div>
             ))}
           </Card>
@@ -59,6 +59,8 @@ function renderChildMenu(
   const childMenu = allMenus.filter(
     (i) => (i.parent || {}).documentId === menu.documentId
   );
+  const thisPath = menu.path === "/" ? "/" : path.join(prefix, menu.path);
+
   return (
     <div key={menu.documentId} className="w-full">
       {/* root */}
@@ -68,11 +70,7 @@ function renderChildMenu(
         <>
           {childMenu.map((child) => (
             <div key={child.documentId} className="indent-4">
-              {renderChildMenu(
-                child,
-                `${prefix ? prefix : "/"}${menu.path}/`,
-                allMenus
-              )}
+              {renderChildMenu(child, thisPath, allMenus)}
             </div>
           ))}
         </>
