@@ -26,9 +26,9 @@ export default async function RootLayout({
             theme={{ algorithm: theme.darkAlgorithm, cssVar: true }}
           >
             <GlobalHeader />
-            <main className="min-h-screen flex justify-center gap-2 w-full ">
+            <main className="min-h-screen flex justify-center gap-2 w-full debug">
               <aside className="h-full"></aside>
-              <div className="max-w-7xl h-full w-full">
+              <div className="max-w-5xl h-full w-full">
                 <Breadcrumbs menus={jsonData.data} />
                 {children}
               </div>

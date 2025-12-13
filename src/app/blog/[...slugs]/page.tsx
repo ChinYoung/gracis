@@ -19,7 +19,7 @@ const BlogDetail: FC<Props> = async ({ params, searchParams }) => {
   const blog = await fetchStrapi(`blogs/${id}`);
   const jsonData = await blog.json<TStrapiRes<TStrapiBlogDetail>>();
   return (
-    <div className="m-auto">
+    <div className="m-auto max-w-7xl debug">
       <MarkdownBlog
         updatedAt={jsonData.data.updatedAt}
         title={jsonData.data.title}

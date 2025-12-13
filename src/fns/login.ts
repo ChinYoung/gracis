@@ -20,6 +20,9 @@ export async function login() {
     return token
   }
   const { KV: kv, NEXTJS_ENV, STRAPI_URL, CF_CLIENT_ID, CF_CLIENT_SECRET, } = getCloudflareContext().env
+  console.log("🚀 ~ login ~ CF_CLIENT_SECRET:", CF_CLIENT_SECRET)
+  console.log("🚀 ~ login ~ CF_CLIENT_ID:", CF_CLIENT_ID)
+  console.log("🚀 ~ login ~ STRAPI_URL:", STRAPI_URL)
   console.log("🚀 ~ login ~ NEXTJS_ENV:", NEXTJS_ENV)
   if (NEXTJS_ENV === 'development') {
     return ''
