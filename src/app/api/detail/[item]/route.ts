@@ -7,8 +7,6 @@ export async function GET(
 ) {
   try {
     const { item: key } = await params
-    console.log('🚀 ~ ~ ~ ~ ~ ~ ~ ~ ~ GET ~ item:', key)
-
     const r2 = getCloudflareContext().env.gracias
     console.log('🚀 ~ GET ~ key:', key)
     const object = await r2.get(key)

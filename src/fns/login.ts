@@ -15,7 +15,7 @@ function getCookieValue(
 }
 
 export async function login() {
-  const isLocal = getCloudflareContext().env.IS_LOCAL
+  const isLocal = process.env.IS_LOCAL
   if (isLocal) {
     return ''
   }
@@ -23,10 +23,8 @@ export async function login() {
     console.log('return token from closure')
     return token
   }
-  const { KV: kv, NEXTJS_ENV, STRAPI_URL, CF_CLIENT_ID, CF_CLIENT_SECRET, } = getCloudflareContext().env
-  if (NEXTJS_ENV === 'development') {
-    return ''
-  }
+  const { KV: kv, } = getCloudflareContext().env
+  const { STRAPI_URL, CF_CLIENT_ID, CF_CLIENT_SECRET } = process.env
   const { value, metadata } = await kv.getWithMetadata<{ expiration: string }>(
     CF_TOKEN,
   )
